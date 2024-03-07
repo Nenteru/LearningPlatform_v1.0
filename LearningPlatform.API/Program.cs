@@ -1,16 +1,15 @@
-﻿using LearningPlatform.API.Endpoints;
+﻿using LearningPlatform.API.Extensions;
 using LearningPlatform.Application.Interfaces.Auth;
 using LearningPlatform.Application.Interfaces.Repositories;
 using LearningPlatform.Application.Services;
-using LearningPlatform.Core.Models;
 using LearningPlatform.Infrastructure;
 using LearningPlatform.Persistence;
 using LearningPlatform.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.CookiePolicy;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -18,9 +17,7 @@ var configuration = builder.Configuration;
 
 services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
 
-//services.AddAuthorization();
-
-// services.AddAuthentication();
+services.AddApiAuthentication(configuration);
 
 services.AddEndpointsApiExplorer();
 
@@ -32,7 +29,9 @@ services.AddDbContext<LearningDbContext>(options =>
 });
 
 services.AddScoped<IUsersRepository, UsersRepository>();
+services.AddScoped<ICoursesRepository, CoursesRepository>();
 
+services.AddScoped<UsersService>();
 services.AddScoped<CoursesService>();
 
 services.AddScoped<IJwtProvider, JwtProvider>();
@@ -48,8 +47,8 @@ if(app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// app.UseExceptionHandler();
-
+// для большей безопастности, чтобы js код не мог считывать cookie
+// чтобы можно было отправлять cookie только по https протоколу
 app.UseCookiePolicy(new CookiePolicyOptions
 {
     MinimumSameSitePolicy = SameSiteMode.Strict,
@@ -58,9 +57,8 @@ app.UseCookiePolicy(new CookiePolicyOptions
 });
 
 app.UseAuthentication();
+app.UseAuthorization();
 
-//app.UseAuthorization();
-
-app.MapUsersEndpoints();
+app.AddMappedEndpoints();
 
 app.Run();

@@ -1,6 +1,10 @@
 ﻿using LearningPlatform.API.Contracts.Users;
 using LearningPlatform.Application.Services;
+using LearningPlatform.Infrastructure;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace LearningPlatform.API.Endpoints
 {
@@ -21,14 +25,16 @@ namespace LearningPlatform.API.Endpoints
             return Results.Ok();
         }
 
-        private static async Task<IResult> Login(LoginUserRequest request, UsersService usersService)
+        private static async Task<IResult> Login(LoginUserRequest request, UsersService usersService, HttpContext context)
         {
             // Проверить email и пароль
             // Создать токен 
             var token = await usersService.Login(request.Email, request.Password);
 
             // сохранить токен в куки
-            return Results.Ok(token);
+            context.Response.Cookies.Append("tasty-cookies", token);
+
+            return Results.Ok();
         }
     }
 }
