@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using System.Text;
 using System.Security.Claims;
 
-namespace LearningPlatform.Infrastructure
+namespace LearningPlatform.Infrastructure.Authentication
 {
     public class JwtProvider(IOptions<JwtOptions> options) : IJwtProvider
     {
@@ -19,7 +19,11 @@ namespace LearningPlatform.Infrastructure
                 SecurityAlgorithms.HmacSha256);
 
             // полезная информация передающаяся через токен
-            Claim[] claims = [new("userId", user.Id.ToString())];
+            Claim[] claims =
+            [
+                new("userId", user.Id.ToString()),
+                new("Admin", "true"), // для авторизации
+            ];
 
             // настроки токена и его генерация
             var token = new JwtSecurityToken(

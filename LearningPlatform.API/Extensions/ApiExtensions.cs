@@ -1,5 +1,5 @@
 ﻿using LearningPlatform.API.Endpoints;
-using LearningPlatform.Infrastructure;
+using LearningPlatform.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -24,7 +24,9 @@ namespace LearningPlatform.API.Extensions
 
             // схема по которой должен действовать API,
             // когда к нему хочет аутентифицироваться пользователь
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services
+                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
                     options.TokenValidationParameters = new()
@@ -51,7 +53,26 @@ namespace LearningPlatform.API.Extensions
 
                 });
 
-            services.AddAuthorization();
+            services.AddAuthorization(options =>
+            {
+                //options.AddPolicy("AdminPolicy", policy =>
+                //{
+                //    // позволяет управлять схемой аутентификации, иначе - использует default
+                //    // policy.AddAuthenticationSchemes();
+
+                //    // добавление требований к пользователю
+                //    // policy.AddRequirements();
+
+                //    // Политика требудет чтобы был Claim с ключом "Admin" и атрибутом "true"
+                //    policy.RequireClaim("Admin", "true");
+                //});
+
+                options.AddPolicy("StudentPlicy", policy =>
+                {
+                    // создаём новое требование 
+                    policy.Requirements.Add();
+                });
+            });
         }
     }
 }

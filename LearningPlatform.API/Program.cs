@@ -3,6 +3,7 @@ using LearningPlatform.Application.Interfaces.Auth;
 using LearningPlatform.Application.Interfaces.Repositories;
 using LearningPlatform.Application.Services;
 using LearningPlatform.Infrastructure;
+using LearningPlatform.Infrastructure.Authentication;
 using LearningPlatform.Persistence;
 using LearningPlatform.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,7 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions)));
+services.Configure<JwtOptions>(configuration.GetSection(nameof(JwtOptions))); // из appsettings.Development.json
+services.Configure<AuthorizationOptions>(configuration.GetSection(nameof(AuthorizationOptions))); // из appsettings.Development.json
 
 services.AddApiAuthentication(configuration);
 
@@ -58,6 +60,11 @@ app.UseCookiePolicy(new CookiePolicyOptions
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapGet("gat", () =>
+{
+    return Results.Ok("ok");
+}).RequireAuthorization("AdminPolicy");
 
 app.AddMappedEndpoints();
 

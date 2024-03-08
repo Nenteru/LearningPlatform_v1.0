@@ -1,6 +1,4 @@
-﻿
-
-namespace LearningPlatform.Infrastructure
+﻿namespace LearningPlatform.Infrastructure.Authentication
 {
     public class JwtOptions
     {

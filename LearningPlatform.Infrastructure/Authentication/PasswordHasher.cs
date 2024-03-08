@@ -1,8 +1,6 @@
-﻿
+﻿using LearningPlatform.Application.Interfaces.Auth;
 
-using LearningPlatform.Application.Interfaces.Auth;
-
-namespace LearningPlatform.Infrastructure
+namespace LearningPlatform.Infrastructure.Authentication
 {
     public class PasswordHasher : IPasswordHasher
     {
