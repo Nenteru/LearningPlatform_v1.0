@@ -1,4 +1,5 @@
-﻿using LearningPlatform.Core.Models;
+﻿using LearningPlatform.Core.Enums;
+using LearningPlatform.Core.Models;
 
 namespace LearningPlatform.Application.Interfaces.Repositories
 {
@@ -6,5 +7,6 @@ namespace LearningPlatform.Application.Interfaces.Repositories
     {
         Task Add(User user);
         Task<User> GetByEmail(string email);
+        Task<HashSet<Permission>> GetUserPermissions(Guid userId);
     }
 }

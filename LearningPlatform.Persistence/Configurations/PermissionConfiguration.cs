@@ -14,7 +14,7 @@ namespace LearningPlatform.Persistence.Configurations
             builder.HasKey(p => p.Id);
 
             var permissions = Enum
-                .GetValues<Permissions>()
+                .GetValues<Permission>()
                 .Select(p => new PermissionEntity
                 {
                     Id = (int)p,

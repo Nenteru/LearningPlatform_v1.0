@@ -1,5 +1,6 @@
 ﻿
 
+using LearningPlatform.Core.Enums;
 using LearningPlatform.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -8,13 +9,29 @@ namespace LearningPlatform.Persistence.Configurations
 {
     public partial class RolePermissionConfiguration : IEntityTypeConfiguration<RolePermissionEntity>
     {
+        private readonly AuthorizationOptions _authorizationOptions;
+
         public RolePermissionConfiguration(AuthorizationOptions authorization)
         {
-            
+            _authorizationOptions = authorization;
         }
         public void Configure(EntityTypeBuilder<RolePermissionEntity> builder)
         {
-            // дописать
+            builder.HasKey(r => new { r.RoleId, r.PermissionId });
+
+            builder.HasData(ParseRolePermissions());
+        }
+
+        private RolePermissionEntity[] ParseRolePermissions()
+        {
+            return _authorizationOptions.RolePermissions
+                .SelectMany(rp => rp.Permissions
+                    .Select(p => new RolePermissionEntity
+                    {
+                        RoleId = (int)Enum.Parse<Role>(rp.Role),
+                        PermissionId = (int)Enum.Parse<Permission>(p)
+                    }))
+                .ToArray();
         }
     }
 }

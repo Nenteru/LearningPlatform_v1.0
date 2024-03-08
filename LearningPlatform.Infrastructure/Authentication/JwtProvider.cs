@@ -21,8 +21,7 @@ namespace LearningPlatform.Infrastructure.Authentication
             // полезная информация передающаяся через токен
             Claim[] claims =
             [
-                new("userId", user.Id.ToString()),
-                new("Admin", "true"), // для авторизации
+                new(CustomClaims.UserId, user.Id.ToString()),
             ];
 
             // настроки токена и его генерация

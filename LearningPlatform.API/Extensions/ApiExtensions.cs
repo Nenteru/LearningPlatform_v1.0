@@ -1,6 +1,9 @@
 ﻿using LearningPlatform.API.Endpoints;
+using LearningPlatform.Core.Enums;
 using LearningPlatform.Infrastructure.Authentication;
+using LearningPlatform.Persistence.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -53,26 +56,18 @@ namespace LearningPlatform.API.Extensions
 
                 });
 
-            services.AddAuthorization(options =>
-            {
-                //options.AddPolicy("AdminPolicy", policy =>
-                //{
-                //    // позволяет управлять схемой аутентификации, иначе - использует default
-                //    // policy.AddAuthenticationSchemes();
+            services.AddScoped<IPermissionService, PermissionService>();
+            services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
 
-                //    // добавление требований к пользователю
-                //    // policy.AddRequirements();
+            services.AddAuthorization();
+        }
 
-                //    // Политика требудет чтобы был Claim с ключом "Admin" и атрибутом "true"
-                //    policy.RequireClaim("Admin", "true");
-                //});
-
-                options.AddPolicy("StudentPlicy", policy =>
-                {
-                    // создаём новое требование 
-                    policy.Requirements.Add();
-                });
-            });
+        public static IEndpointConventionBuilder RequirePermissions<TBuilder>(
+            this TBuilder builder, params Permission[] permissions)
+                where TBuilder : IEndpointConventionBuilder
+        {
+            return builder.RequireAuthorization(policy =>
+                policy.AddRequirements(new PermissionRequirement(permissions)));
         }
     }
 }

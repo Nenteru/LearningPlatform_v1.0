@@ -2,6 +2,7 @@
 using LearningPlatform.Application.Interfaces.Auth;
 using LearningPlatform.Application.Interfaces.Repositories;
 using LearningPlatform.Application.Services;
+using LearningPlatform.Core.Enums;
 using LearningPlatform.Infrastructure;
 using LearningPlatform.Infrastructure.Authentication;
 using LearningPlatform.Persistence;
@@ -61,10 +62,25 @@ app.UseCookiePolicy(new CookiePolicyOptions
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("gat", () =>
+app.MapGet("get", () =>
 {
     return Results.Ok("ok");
-}).RequireAuthorization("AdminPolicy");
+}).RequirePermissions(Permission.Read);
+
+app.MapPost("post", () =>
+{
+    return Results.Ok("ok");
+}).RequirePermissions(Permission.Create);
+
+app.MapPut("put", () =>
+{
+    return Results.Ok("ok");
+}).RequirePermissions(Permission.Update);
+
+app.MapDelete("delete", () =>
+{
+    return Results.Ok("ok");
+}).RequirePermissions(Permission.Delete);
 
 app.AddMappedEndpoints();
 
