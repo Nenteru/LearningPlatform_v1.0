@@ -27,13 +27,20 @@ namespace LearningPlatform.API.Endpoints
 
         private static async Task<IResult> Login(LoginUserRequest request, UsersService usersService, HttpContext context)
         {
-            // Проверить email и пароль
-            // Создать токен 
-            var token = await usersService.Login(request.Email, request.Password);
+            try
+            {
+                // Проверить email и пароль
+                // Создать токен 
+                var token = await usersService.Login(request.Email, request.Password);
 
-            // сохранить токен в куки
-            context.Response.Cookies.Append("tasty-cookies", token);
-
+                // сохранить токен в куки
+                context.Response.Cookies.Append("tasty-cookies", token);
+            }
+            catch(Exception e)
+            {
+                return Results.BadRequest(e.Message);
+            }
+            
             return Results.Ok();
         }
     }

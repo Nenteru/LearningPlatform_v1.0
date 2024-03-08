@@ -31,15 +31,7 @@ namespace LearningPlatform.Application.Services
 
         public async Task<string> Login(string email, string password)
         {
-            User user;
-            try
-            {
-                user = await _usersRepository.GetByEmail(email);
-            }
-            catch(Exception e)
-            {
-                return e.Message;
-            }
+            User user = await _usersRepository.GetByEmail(email);
 
             var result = _passwordHasher.Verify(password, user.PasswordHash);
 
