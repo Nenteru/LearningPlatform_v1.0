@@ -20,7 +20,7 @@ namespace LearningPlatform.Persistence.Repositories
         public async Task Add(User user)
         {
             var roleEntity = await _context.Roles
-                .SingleOrDefaultAsync(r => r.Id == (int)Role.Admin)
+                .SingleOrDefaultAsync(r => r.Id == (int)Role.User)
                 ?? throw new InvalidOperationException();
 
 
